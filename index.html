@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Picker</title>
+    <script src="https://cdn.jsdelivr.net/npm/minisearch@7.2.0/dist/umd/index.min.js"></script>
+    <script src="js/knockout-3.5.1.js" defer></script>
+    <script type="module" src="js/emojis.js"></script>
+    <script type="module" src="js/app.js" defer></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!--
+    This app presents a search box for filtering through a list of emojies and provides a
+    one click copy for the search results. 
+    -->
+    <div id="app" data-bind="with: emojiPicker">
+        <div class="emoji-picker">
+            <div class="search-bar">
+                <input type="text" placeholder="Search emojis..." data-bind="value: searchTerm, valueUpdate: 'afterkeydown'">
+            </div>
+            <div class="result-count" data-bind="text: filteredEmojis().length + ' results'"></div>
+            <div class="emoji-list" data-bind="foreach: filteredEmojis">
+                <div class="emoji-item">
+                    <span class="emoji-name" data-bind="text: name"></span>
+                    <span class="emoji-character" data-bind="text: character"></span>
+                    <button class="copy-btn" data-bind="click: $parent.selectEmoji">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

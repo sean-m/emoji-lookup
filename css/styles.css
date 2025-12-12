@@ -1,0 +1,96 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 20px;
+    font-size: 24px;
+}
+
+#app {
+    width: 100%;
+    max-width: 600px;
+}
+
+.emoji-picker {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.search-bar {
+    margin-bottom: 30px;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 50px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.search-bar input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.result-count {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.emoji-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.emoji-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.2s ease;
+}
+
+.emoji-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.emoji-character {
+    font-size: 24px;
+}
+
+.emoji-name {
+    flex: 1;
+    color: #333;
+}
+
+.copy-btn {
+    padding: 8px 20px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+}
+
+.copy-btn:hover {
+    background: #5568d3;
+    transform: scale(1.05);
+}
