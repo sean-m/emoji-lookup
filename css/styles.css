@@ -1,12 +1,23 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Base styles for both apps */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
+    padding: 20px;
+    margin: 0;
+}
+
+/* Styles for index.html (emoji picker standalone) */
+body.emoji-picker-standalone {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0;
-    padding: 20px;
     font-size: 24px;
 }
 
@@ -93,4 +104,570 @@ body {
 .copy-btn:hover {
     background: #5568d3;
     transform: scale(1.05);
+}
+
+/* ========== Tools App Styles ========== */
+
+.app-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.app-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px 40px;
+    text-align: center;
+}
+
+.app-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 5px;
+}
+
+.app-header p {
+    opacity: 0.9;
+    font-size: 1.1em;
+}
+
+.tab-navigation {
+    display: flex;
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    overflow-x: auto;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 18px 25px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-size: 16px;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: fit-content;
+}
+
+.tab-button:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.tab-button.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+    background: white;
+}
+
+.tab-content {
+    display: none;
+    padding: 40px;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Quick Tools Styles */
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.tool-button {
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.tool-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.tool-button.github {
+    background: linear-gradient(135deg, #24292e 0%, #444d56 100%);
+}
+
+.tool-button.cyberchef {
+    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.tool-button.wikipedia {
+    background: linear-gradient(135deg, #000000 0%, #434343 100%);
+}
+
+.section-title {
+    color: #333;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    font-weight: 600;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+.clipboard-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    resize: vertical;
+    min-height: 100px;
+    margin-bottom: 10px;
+}
+
+.clipboard-button {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.clipboard-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Split to Lines Styles */
+#inputText {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: 'Courier New', monospace;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+#inputText:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.line-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 10px;
+    transition: all 0.2s ease;
+}
+
+.line-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.line-text {
+    flex: 1;
+    padding: 10px 15px;
+    margin-left: 10px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    word-break: break-word;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 1.2em;
+}
+
+.empty-state-icon {
+    font-size: 4em;
+    margin-bottom: 20px;
+}
+
+.stats {
+    color: #666;
+    font-size: 0.95em;
+    margin-left: 10px;
+}
+
+/* Consent URL Generator Styles */
+.tenants-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.tenant-card {
+    background: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.tenant-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+}
+
+.tenant-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.tenant-name {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #333;
+}
+
+.tenant-alias {
+    background: #667eea;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+.tenant-alias.gov {
+    background: #dc3545;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #495057;
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+.client-id-input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ced4da;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
+    transition: border-color 0.3s ease;
+}
+
+.client-id-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.url-output {
+    width: 100%;
+    padding: 12px;
+    background: white;
+    border: 2px solid #ced4da;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+    min-height: 44px;
+    color: #495057;
+}
+
+.url-output.empty {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn {
+    flex: 1;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-copy {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+}
+
+.btn-copy:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
+}
+
+.btn-open {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-open:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.links-section {
+    margin-top: 40px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.links-grid {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.link-button {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.link-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+}
+
+.tasks-section {
+    margin-top: 30px;
+    padding: 20px;
+    background: #e7f3ff;
+    border-radius: 10px;
+}
+
+.tasks-output {
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    white-space: pre-wrap;
+    margin-top: 10px;
+    border: 1px solid #ced4da;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.copy-tasks-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.copy-tasks-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #28a745;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Emoji Picker Styles (tools-app version with context) */
+.emoji-picker {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.emoji-picker .search-bar {
+    margin-bottom: 20px;
+}
+
+.emoji-picker .search-bar input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.emoji-picker .search-bar input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.emoji-picker .result-count {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.emoji-picker .emoji-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.emoji-picker .emoji-item {
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.emoji-picker .emoji-item:hover {
+    background: #e9ecef;
+    transform: translateX(3px);
+}
+
+.emoji-picker .emoji-character {
+    font-size: 20px;
+    min-width: 30px;
+}
+
+.emoji-picker .emoji-name {
+    flex: 1;
+    color: #333;
+    font-size: 14px;
+}
+
+.emoji-picker .copy-btn {
+    padding: 6px 16px;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 12px;
+    min-width: 70px;
+    white-space: nowrap;
+}
+
+.emoji-picker .copy-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(17, 153, 142, 0.3);
+}
+
+/* Split to Lines copy button overrides */
+.line-item .copy-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: 80px;
+}
+
+.line-item .copy-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(17, 153, 142, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .app-container {
+        border-radius: 0;
+    }
+
+    .tenants-container {
+        grid-template-columns: 1fr;
+    }
+
+    .tab-button {
+        padding: 15px 15px;
+        font-size: 14px;
+    }
 }

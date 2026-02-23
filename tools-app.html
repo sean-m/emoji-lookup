@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Tools</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/minisearch@7.2.0/dist/umd/index.min.js"></script>
+    <script src="js/knockout-3.5.1.js" defer></script>
+    <script type="module" src="js/emojis.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <h1>🛠️ Quick Tools</h1>
+        </div>
+
+        <nav class="tab-navigation">
+            <button class="tab-button active" onclick="switchTab('quicktools')">
+                🚀 Quick Tools
+            </button>
+            <button class="tab-button" onclick="switchTab('emojipicker')">
+                😀 Emoji Picker
+            </button>
+            <button class="tab-button" onclick="switchTab('splitlines')">
+                ✂️ Split to Lines
+            </button>
+            <button class="tab-button" onclick="switchTab('consent')">
+                🔐 Consent URLs
+            </button>
+        </nav>
+
+        <!-- Quick Tools Tab -->
+        <div id="quicktools" class="tab-content active">
+            <div class="section-title">Web Tools</div>
+            <div class="button-grid">
+                <button class="tool-button github" onclick="openGitHubTasks()">
+                    📋 GitHub Tasks
+                </button>
+                <button class="tool-button cyberchef" onclick="openCyberChef()">
+                    🔐 CyberChef
+                </button>
+                <button class="tool-button wikipedia" onclick="openWikipedia()">
+                    📚 Wikipedia
+                </button>
+                <button class="tool-button" onclick="window.open('https://gettenantpartitionweb.azurewebsites.net/#', '_blank')">
+                    🔍 Tenant Lookup
+                </button>
+            </div>
+            <div class="section-title">Tenant Checklist</div>
+            <textarea class="clipboard-input" id="tenantChecklist" readonly>### Tenant Checklist
+- [ ] Oregon
+- [ ] ODHSOHA
+- [ ] ODOT
+- [ ] ODE
+- [ ] DOC
+- [ ] OSP
+- [ ] OYA
+- [ ] PERS
+</textarea>
+            <button class="clipboard-button" onclick="copyTenantChecklist()">
+                📋 Copy Tenant Checklist
+            </button>
+        </div>
+
+        <!-- Emoji Picker Tab -->
+        <div id="emojipicker" class="tab-content">
+            <div id="app" data-bind="with: emojiPicker">
+                <div class="emoji-picker">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search emojis..." data-bind="value: searchTerm, valueUpdate: 'afterkeydown'">
+                    </div>
+                    <div class="result-count" data-bind="text: filteredEmojis().length + ' results'"></div>
+                    <div class="emoji-list" data-bind="foreach: filteredEmojis">
+                        <div class="emoji-item">
+                            <span class="emoji-character" data-bind="text: character"></span>
+                            <span class="emoji-name" data-bind="text: name"></span>
+                            <button class="copy-btn" data-bind="click: $parent.selectEmoji">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Split to Lines Tab -->
+        <div id="splitlines" class="tab-content">
+            <div class="section-title">Input Text</div>
+            <textarea id="inputText"
+                placeholder="Paste or type your text here...&#10;Each line will become a separate copyable item below."></textarea>
+
+            <div class="section-title">
+                Copyable Lines <span class="stats" id="stats"></span>
+            </div>
+            <div id="outputContainer"></div>
+        </div>
+
+        <!-- Consent URL Generator Tab -->
+        <div id="consent" class="tab-content">
+            <div class="tenants-container" id="tenantsContainer"></div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">Copied to clipboard!</div>
+
+    <script type="module" src="js/app.js" defer></script>
+    <script>
+        // Tab Switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+
+            // Activate selected tab button
+            event.target.classList.add('active');
+
+            // Save current tab to localStorage
+            localStorage.setItem('currentTab', tabName);
+        }
+
+        // Notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+
+        // ========== QUICK TOOLS ==========
+        function openGitHubTasks() {
+            window.open('https://github.com/orgs/OregonSDC/projects/9/views/6?filterQuery=is%3Aopen+assignee%3Asean-mcardle%2CThaDarkMiget%2Conebrianofmany%2Cctcordas%2CTammyKittson%2CCheryl-Bowman%2Cmichelle-summers%2Cteckmark%2CSteveSteinlicht%2CCanbyCanBe+', '_blank');
+        }
+
+        function openCyberChef() {
+            window.open('https://gchq.github.io/CyberChef/', '_blank');
+        }
+
+        function openWikipedia() {
+            window.open('https://wikipedia.org', '_blank');
+        }
+
+        function copyTenantChecklist() {
+            const textarea = document.getElementById('tenantChecklist');
+            textarea.select();
+            document.execCommand('copy');
+            showNotification('Tenant checklist copied to clipboard!');
+        }
+
+        // ========== SPLIT TO LINES ==========
+        const inputText = document.getElementById('inputText');
+        const outputContainer = document.getElementById('outputContainer');
+        const stats = document.getElementById('stats');
+
+        // Load saved text from localStorage
+        const savedText = localStorage.getItem('splitToLinesText');
+        if (savedText) {
+            inputText.value = savedText;
+            updateOutput();
+        }
+
+        // Update output when input changes
+        inputText.addEventListener('input', () => {
+            updateOutput();
+            localStorage.setItem('splitToLinesText', inputText.value);
+        });
+
+        function updateOutput() {
+            const text = inputText.value.trim();
+
+            if (!text) {
+                outputContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <div>Start typing to see copyable lines</div>
+                    </div>
+                `;
+                stats.textContent = '';
+                return;
+            }
+
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+
+            stats.textContent = `(${lines.length} line${lines.length !== 1 ? 's' : ''})`;
+
+            outputContainer.innerHTML = lines.map((line, index) => `
+                <div class="line-item">
+                    <button class="copy-btn" onclick="copyLine(${index})">Copy</button>
+                    <div class="line-text">${escapeHtml(line.trim())}</div>
+                </div>
+            `).join('');
+        }
+
+        function copyLine(index) {
+            const text = inputText.value.trim();
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            const lineToCopy = lines[index].trim();
+
+            navigator.clipboard.writeText(lineToCopy).then(() => {
+                showNotification(`Copied: "${lineToCopy.substring(0, 30)}${lineToCopy.length > 30 ? '...' : ''}"`);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = lineToCopy;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showNotification(`Copied: "${lineToCopy.substring(0, 30)}${lineToCopy.length > 30 ? '...' : ''}"`);
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ========== CONSENT URL GENERATOR ==========
+        const tenants = [
+            {
+                tenantId: "aa3f6932-fa7c-47b4-a0ce-a598cad161cf",
+                tenantAlias: "aad_oregon",
+                name: "stateoforegon.onmicrosoft.com",
+                isGov: false
+            },
+            {
+                tenantId: "658e63e8-8d39-499c-8f48-13adc9452f4c",
+                tenantAlias: "aad_dhsoha",
+                name: "dhsoha.onmicrosoft.com",
+                isGov: false
+            },
+            {
+                tenantId: "ed20e773-9774-43f4-9113-0bc00d2cbf78",
+                tenantAlias: "aad_oya",
+                name: "oya.onmicrosoft.com",
+                isGov: false
+            },
+            {
+
+                tenantId: "b4f51418-b269-49a2-935a-fa54bf584fc8",
+                tenantAlias: "aad_ode",
+                name: "odemail.onmicrosoft.com",
+                isGov: false
+            },
+            {
+
+                tenantId: "28b0d013-46bc-4a64-8d86-1c8a31cf590d",
+                tenantAlias: "aad_odot",
+                name: "ordot.onmicrosoft.com",
+                isGov: false
+            },
+            {
+
+                tenantId: "860f660b-1578-45aa-8e77-aa9b68a0c0dd",
+                tenantAlias: "aad_pers",
+                name: "oregonpers.onmicrosoft.com",
+                isGov: false
+            },
+            {
+
+                tenantId: "3f781cf3-3792-477b-abf5-ff27250dd659",
+                tenantAlias: "aad_doc",
+                name: "oregondoc.onmicrosoft.com",
+                isGov: false
+            },
+            {
+
+                tenantId: "776738eb-4f9b-444f-bc33-4dd4e8e1a9b5",
+                tenantAlias: "aad_osp",
+                name: "OregonStatePolice.onmicrosoft.com",
+                isGov: false
+            },
+            {
+
+                tenantId: "a276ba90-5ec5-4241-baf6-ec133094cae9",
+                tenantAlias: "ess_gov",
+                name: "oregoness.onmicrosoft.us",
+                isGov: true
+            }
+        ];
+
+        const tenantsContainer = document.getElementById('tenantsContainer');
+        const tasksOutput = document.getElementById('tasksOutput');
+
+        // Create tenant cards
+        tenants.forEach((tenant, index) => {
+            const card = document.createElement('div');
+            card.className = 'tenant-card';
+            card.innerHTML = `
+                <div class="tenant-header">
+                    <div class="tenant-name">${tenant.name}</div>
+                    <div class="tenant-alias ${tenant.isGov ? 'gov' : ''}">${tenant.tenantAlias}</div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Client ID:</label>
+                    <input 
+                        type="text" 
+                        class="client-id-input" 
+                        id="input-${index}"
+                        placeholder="Enter application client ID..."
+                    >
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Admin Consent URL:</label>
+                    <div class="url-output empty" id="output-${index}">URL will appear here when you enter a Client ID</div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-copy" id="copy-${index}" disabled onclick="copyUrl(${index})">
+                        📋 Copy URL
+                    </button>
+                    <button class="btn btn-open" id="open-${index}" disabled onclick="openUrl(${index})">
+                        🌐 Open in Browser
+                    </button>
+                </div>
+            `;
+            tenantsContainer.appendChild(card);
+
+            // Add input event listener
+            const input = document.getElementById(`input-${index}`);
+            input.addEventListener('input', () => updateUrl(index, tenant));
+
+            // Load saved value from localStorage
+            const savedValue = localStorage.getItem(`consent-url-${tenant.tenantAlias}`);
+            if (savedValue) {
+                input.value = savedValue;
+                updateUrl(index, tenant);
+            }
+        });
+
+        function updateUrl(index, tenant) {
+            const input = document.getElementById(`input-${index}`);
+            const output = document.getElementById(`output-${index}`);
+            const copyBtn = document.getElementById(`copy-${index}`);
+            const openBtn = document.getElementById(`open-${index}`);
+
+            const clientId = input.value.trim();
+
+            // Save to localStorage
+            localStorage.setItem(`consent-url-${tenant.tenantAlias}`, clientId);
+
+            if (clientId) {
+                const loginDomain = tenant.isGov ? 'us' : 'com';
+                const url = `https://login.microsoftonline.${loginDomain}/${tenant.tenantId}/adminconsent?client_id=${clientId}`;
+                output.textContent = url;
+                output.classList.remove('empty');
+                copyBtn.disabled = false;
+                openBtn.disabled = false;
+                output.dataset.url = url;
+            } else {
+                output.textContent = 'URL will appear here when you enter a Client ID';
+                output.classList.add('empty');
+                copyBtn.disabled = true;
+                openBtn.disabled = true;
+                delete output.dataset.url;
+            }
+        }
+
+        function copyUrl(index) {
+            const output = document.getElementById(`output-${index}`);
+            const url = output.dataset.url;
+
+            if (url) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showNotification('URL copied to clipboard!');
+                }).catch(() => {
+                    // Fallback
+                    const textarea = document.createElement('textarea');
+                    textarea.value = url;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    showNotification('URL copied to clipboard!');
+                });
+            }
+        }
+
+        function openUrl(index) {
+            const output = document.getElementById(`output-${index}`);
+            const url = output.dataset.url;
+
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
+
+        function copyConsentTasks() {
+            const tasks = tasksOutput.textContent;
+
+            navigator.clipboard.writeText(tasks).then(() => {
+                showNotification('Markdown tasks copied to clipboard!');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = tasks;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showNotification('Markdown tasks copied to clipboard!');
+            });
+        }
+
+        // ========== INITIALIZATION ==========
+        // Restore last active tab
+        const savedTab = localStorage.getItem('currentTab');
+        if (savedTab && savedTab !== 'quicktools') {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(savedTab).classList.add('active');
+            document.querySelector(`[onclick="switchTab('${savedTab}')"]`).classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
